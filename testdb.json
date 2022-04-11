@@ -1,0 +1,300 @@
+{
+  "patients": [
+    {
+      "id": 1,
+      "name": "Margrethe Christensen",
+      "cpr": "241203-1234"
+    },
+    {
+      "id": 2,
+      "name": "Lars Larsen",
+      "cpr": "010150-1235"
+    },
+    {
+      "id": 3,
+      "name": "Hans Hansen",
+      "cpr": "130378-1235"
+    },
+    {
+      "id": 4,
+      "name": "Niels Nielsen",
+      "cpr": "180951-1235"
+    },
+    {
+      "id": 5,
+      "name": "Mads Madsen",
+      "cpr": "160793-1235"
+    },
+    {
+      "id": 6,
+      "name": "Jens Jensen",
+      "cpr": "050443-1235"
+    },
+    {
+      "id": 7,
+      "name": "John Dillermand",
+      "cpr": "151092-1235"
+    },
+    {
+      "id": 8,
+      "name": "Britta Nielsen",
+      "cpr": "280554-1234"
+    }
+  ],
+  "corona_tests": [
+    {
+      "patient_id": 7,
+      "date": "17/05/2021 12:30",
+      "result": "paavist"
+    },
+    {
+      "patient_id": 7,
+      "date": "01/06/2021 9:15",
+      "result": "ikke paavist"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 10:15",
+      "result": "ikke paavist"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 12:35",
+      "result": "ikke paavist"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 13:55",
+      "result": "ikke paavist"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 15:10",
+      "result": "ikke paavist"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 16:40",
+      "result": "ikke paavist"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 18:00",
+      "result": "ikke paavist"
+    },
+    {
+      "patient_id": 7,
+      "date": "21/08/2021 16:40",
+      "result": "ikke paavist"
+    },
+    {
+      "patient_id": 7,
+      "date": "30/08/2021 16:00",
+      "result": "paavist"
+    },
+    {
+      "patient_id": 7,
+      "date": "13/09/2021 16:20",
+      "result": "paavist"
+    },
+    {
+      "patient_id": 7,
+      "date": "15/09/2021 6:20",
+      "result": "ikke paavist"
+    },
+    {
+      "patient_id": 2,
+      "date": "10/10/2021 14:05",
+      "result": "paavist"
+    },
+    {
+      "patient_id": 2,
+      "date": "28/10/2021 10:50",
+      "result": "ikke paavist"
+    }
+  ],
+  "corona_vaccination": [
+    {
+      "patient_id": 2,
+      "date": "03/01/2021 12:30",
+      "shot_number": 1
+    },
+    {
+      "patient_id": 2,
+      "date": "05/03/2021 15:25",
+      "shot_number": 2
+    },
+    {
+      "patient_id": 2,
+      "date": "18/09/2021 9:05",
+      "shot_number": 3
+    },
+    {
+      "patient_id": 8,
+      "date": "07/02/2021 11:40",
+      "shot_number": 1
+    },
+    {
+      "patient_id": 8,
+      "date": "11/05/2021 14:15",
+      "shot_number": 2
+    },
+    {
+      "patient_id": 8,
+      "date": "18/12/2021 13:10",
+      "shot_number": 3
+    },
+    {
+      "patient_id": 4,
+      "date": "07/02/2021 14:45",
+      "shot_number": 1
+    },
+    {
+      "patient_id": 4,
+      "date": "12/05/2021 18:00",
+      "shot_number": 2
+    },
+    {
+      "patient_id": 4,
+      "date": "18/12/2021 10:55",
+      "shot_number": 3
+    },
+    {
+      "patient_id": 6,
+      "date": "21/06/2021 11:15",
+      "shot_number": 1
+    },
+    {
+      "patient_id": 6,
+      "date": "28/08/2021 13:55",
+      "shot_number": 2
+    }
+  ],
+  "appointments": [
+    {
+      "patient_id": 7,
+      "date": "17/05/2021 12:30",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 7,
+      "date": "01/06/2021 9:15",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 10:15",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 12:35",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 13:55",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 15:10",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 16:40",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 1,
+      "date": "21/08/2021 18:00",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 7,
+      "date": "21/08/2021 16:40",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 7,
+      "date": "30/08/2021 16:00",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 7,
+      "date": "13/09/2021 16:20",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 7,
+      "date": "15/09/2021 6:20",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 2,
+      "date": "10/10/2021 14:05",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 2,
+      "date": "28/10/2021 10:50",
+      "appointment": "corona_test"
+    },
+    {
+      "patient_id": 2,
+      "date": "03/01/2021 12:30",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 2,
+      "date": "05/03/2021 15:25",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 2,
+      "date": "18/09/2021 9:05",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 8,
+      "date": "07/02/2021 11:40",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 8,
+      "date": "11/05/2021 14:15",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 8,
+      "date": "18/12/2021 13:10",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 4,
+      "date": "07/02/2021 14:45",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 4,
+      "date": "12/05/2021 18:00",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 4,
+      "date": "18/12/2021 10:55",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 6,
+      "date": "21/06/2021 11:15",
+      "appointment": "corona_vaccination"
+    },
+    {
+      "patient_id": 6,
+      "date": "28/08/2021 13:55",
+      "appointment": "corona_vaccination"
+    }
+  ]
+}
