@@ -2,9 +2,38 @@ import json
 from model import Appointment, CoronaTest, CoronaVaccination, Patient
 
 
+# Database class High db
+    # Patient List class High db.patients
+        # Patient class High db.patients[i]
+            # integer High db.patients[i].id
+            # string High db.patients[i].name
+            # string High db.patients[i].cpr
+
+    # Appointment List class High db.appointments
+        # Appointment class High db.appointments[i]
+            # integer High db.appointments[i].patient_id
+            # datetime High db.appointments[i].date
+            # string High db.appointments[i].appointment
+
+    # CoronaTest List class High db.coronaTests
+        # CoronaTest class High db.coronaTests[i]
+            # integer High db.coronaTests[i].patient_id
+            # datetime High db.coronaTests[i].date
+            # string High db.coronaTests[i].result
+
+    # CoronaVaccination List class High db.coronaVaccinations
+        # CoronaVaccination class High db.coronaVaccinations[i]
+            # integer High db.coronaVaccinations[i].patient_id
+            # datetime High db.coronaVaccinations[i].date
+            # string High db.coronaVaccinations[i].shot_number
+
+# CoronaTest class High db.coronaTests
+# CoronaVaccintation class High db.coronaVaccinations
+
+
 class Database:
     patients: list[Patient] = []
-    coronaTests: list[CoronaTest] = []
+    coronaTests:  list[CoronaTest] = []
     coronaVaccinations: list[CoronaVaccination] = []
     appointments: list[Appointment] = []
 

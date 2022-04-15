@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from numpy import integer
+#from numpy import integer
 
 
 @dataclass

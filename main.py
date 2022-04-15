@@ -19,3 +19,5 @@ if __name__ == "__main__":
     # pprint(db.appointments)
 
     pprint(db.coronaVaccinations)
+    pprint(type(db.patients))
+    pprint(retrievePatientData(2, db))
