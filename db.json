@@ -116,58 +116,47 @@
   "corona_vaccination": [
     {
       "patient_id": 2,
-      "date": "03/01/2021 12:30",
-      "shot_number": 1
+      "date": "03/01/2021 12:30"
     },
     {
       "patient_id": 2,
-      "date": "05/03/2021 15:25",
-      "shot_number": 2
+      "date": "05/03/2021 15:25"
     },
     {
       "patient_id": 2,
-      "date": "18/09/2021 9:05",
-      "shot_number": 3
+      "date": "18/09/2021 9:05"
     },
     {
       "patient_id": 8,
-      "date": "07/02/2021 11:40",
-      "shot_number": 1
+      "date": "07/02/2021 11:40"
     },
     {
       "patient_id": 8,
-      "date": "11/05/2021 14:15",
-      "shot_number": 2
+      "date": "11/05/2021 14:15"
     },
     {
       "patient_id": 8,
-      "date": "18/12/2021 13:10",
-      "shot_number": 3
+      "date": "18/12/2021 13:10"
     },
     {
       "patient_id": 4,
-      "date": "07/02/2021 14:45",
-      "shot_number": 1
+      "date": "07/02/2021 14:45"
     },
     {
       "patient_id": 4,
-      "date": "12/05/2021 18:00",
-      "shot_number": 2
+      "date": "12/05/2021 18:00"
     },
     {
       "patient_id": 4,
-      "date": "18/12/2021 10:55",
-      "shot_number": 3
+      "date": "18/12/2021 10:55"
     },
     {
       "patient_id": 6,
-      "date": "21/06/2021 11:15",
-      "shot_number": 1
+      "date": "21/06/2021 11:15"
     },
     {
       "patient_id": 6,
-      "date": "28/08/2021 13:55",
-      "shot_number": 2
+      "date": "28/08/2021 13:55"
     }
   ],
   "appointments": [

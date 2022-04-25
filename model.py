@@ -1,31 +1,28 @@
 from dataclasses import dataclass
 
-#from numpy import integer
+
+@dataclass
+class Patient:  # {shs: shs}
+    id: int     # {shs: shs}
+    name: str   # {shs: shs; patient: shs}
+    cpr: str    # {shs: shs; patient: shs}
 
 
 @dataclass
-class Patient:
-    id: int
-    name: str
-    cpr: str
+class CoronaTest:    # {shs: shs}
+    patient_id: int  # {shs: shs}
+    date: str        # {shs: shs}
+    result: str      # {shs: shs}
 
 
 @dataclass
-class CoronaTest:
-    patient_id: int
-    date: str
-    result: str
+class CoronaVaccination:  # {shs: shs}
+    patient_id: int       # {shs: shs}
+    date: str             # {shs: shs}
 
 
 @dataclass
-class CoronaVaccination:
-    patient_id: int
-    date: str
-    shot_number: int
-
-
-@dataclass
-class Appointment:
-    patient_id: int
-    date: str
-    appointment: str
+class Appointment:    # {shs: shs}
+    patient_id: int   # {shs: shs}
+    date: str         # {shs: shs}
+    appointment: str  # {shs: shs}

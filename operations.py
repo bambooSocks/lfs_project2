@@ -1,25 +1,41 @@
 import datetime
 import random
+
+from numpy import isin
 from model import Appointment, CoronaTest, CoronaVaccination, Patient
 from db_access import Database
 
+# use if you need
+# # if_acts_for(bookAppointment, patient) then
+# #   isInDB_declass = declassify(isInDB, {shs: shs})
+# isInDB_declass = isInDB
+
 
 def bookAppointment(patient: Patient, date: str, appointment_type: str, db: Database):
+    """
+        patient          {shs: shs}
+        date             {shs: shs}
+        appointment_type {shs: shs}
+        db               {⊥}
+    """
     # Check if patient exists
-    if patient in db.patients:
-        # Patient exists, make appointment
-        print("Patient exists, making appointment")
-        db.appointments.append(Appointment(patient.id, date, appointment_type))
-    else:
-        # Patient does not exist, create patient and appointment
-        print("Patient does not exist, creating patient and appointment")
-        db.patients.append(patient)
-        db.appointments.append(Appointment(patient.id, date, appointment_type))
+    isInDB = False  # {shs: shs}
+    i = 0  # {⊥}
+    while i < len(db.patients):
+        if db.patients[i] == patient:
+            isInDB = True
+            # implicit patient, db.patients -> isInDB {shs: shs} -> {shs: shs}
+            # implicit i -> isInDB {⊥} -> {shs: shs}
+            break
+        i += 1  # {⊥} -> {⊥}
 
-    if appointment_type == "corona_test":
-        uploadTestResult(patient.id, date, db)
-    elif appointment_type == "corona_vaccination":
-        updateVaccinationStatus(patient.id, date, db)
+    if isInDB:
+        print("Patient exists, making appointment")  # printed to {shs: shs}
+        db.appointments.append(Appointment(patient.id, date, appointment_type))
+        # {shs: shs} -> {shs: shs}
+    else:
+        # printed to {shs: shs}
+        print("Patient does not exist, no appointment booked")
 
 
 def uploadTestResult(patient_id: int, date: str, db: Database):
@@ -45,13 +61,9 @@ def updateVaccinationStatus(patient_id: int, date: str, db: Database):
     # convert date_after to string
     date_after_str = date_after.strftime("%d/%m/%Y %H:%M")
 
-    # get amount of shots for patient_id
-    shots = len([coronaVaccination.shot_number for coronaVaccination in db.coronaVaccinations if
-                 coronaVaccination.patient_id == patient_id]) + 1
-
     # append new coronaTest to the database
     db.coronaVaccinations.append(
-        CoronaVaccination(patient_id, date_after_str, shots))
+        CoronaVaccination(patient_id, date_after_str))
 
 
 def retrievePatientData(patient_id_low: int, db: Database):
@@ -67,8 +79,9 @@ def retrievePatientData(patient_id_low: int, db: Database):
     def if_acts_for(patient_id: int):
         print('Are you acting (logged-in) as a hospital patient with id={}? y/n'.format(patient_id))
         answer = input()
-        if str(answer) == 'y' or str(answer) == 'Yes' or str(answer) == 'Yes':
-            print('\nYou have the right to access the test results. Here is your COVID-test information:\n')
+        if str(answer) == 'y' or str(answer) == 'yes' or str(answer) == 'Yes':
+            print(
+                '\nYou have the right to access the test results. Here is your COVID-test information:\n')
             permission = True
         else:
             print('\nYou do not have the right to access to this information. Information will not be de-classified.\n')
@@ -79,7 +92,8 @@ def retrievePatientData(patient_id_low: int, db: Database):
         # returns ret:bool{client:hospitalAdmin}
 
         i = 0  # int{hospitalAdmin:hospitalAdmin}
-        match = False  # bool{client:hospitalAdmin, hospitalAdmin:hospitalAdmin}
+        # bool{client:hospitalAdmin, hospitalAdmin:hospitalAdmin}
+        match = False
         while i < len(db_patientsList):
             if db_patientsList[i].id == patient_id:
                 match = True
@@ -89,10 +103,10 @@ def retrievePatientData(patient_id_low: int, db: Database):
         if if_acts_for(patient_id):
             ret = declassify(match)  # {client:hospitalAdmin}
 
-        return ret,match
+        return ret, match
 
-    patient_id = patient_id_low #patient id:int{hospitalAdmin}
-    ret,match = check_user(db.patients, patient_id)
+    patient_id = patient_id_low  # patient id:int{hospitalAdmin}
+    ret, match = check_user(db.patients, patient_id)
 
     # get all patients id's
     patient_ids = [patient.id for patient in db.patients]
@@ -100,7 +114,8 @@ def retrievePatientData(patient_id_low: int, db: Database):
     # check if patient id exists
     if patient_id in patient_ids:
         # patient id exists, get patient
-        patient = db.patients[patient_ids.index(patient_id)]  # patient:int{hospitalAdmin}
+        # patient:int{hospitalAdmin}
+        patient = db.patients[patient_ids.index(patient_id)]
         # loop through coronaTests, find all tests for patient and add to list
 
         # Corona tests:
@@ -171,14 +186,14 @@ def getStats(db: Database, data_from_date: str = None):
         corona_vaccinations = len(db.coronaVaccinations)
 
         # get amount of patients who got 1 shot, 2 shots, 3 shots
-        shots = [{1: 0}, {2: 0}, {3: 0}]
-        for coronaVaccination in db.coronaVaccinations:
-            if coronaVaccination.shot_number == 1:
-                shots[0][1] += 1
-            elif coronaVaccination.shot_number == 2:
-                shots[1][2] += 1
-            elif coronaVaccination.shot_number == 3:
-                shots[2][3] += 1
+        # shots = [{1: 0}, {2: 0}, {3: 0}]
+        # for coronaVaccination in db.coronaVaccinations:
+        #     if coronaVaccination.shot_number == 1:
+        #         shots[0][1] += 1
+        #     elif coronaVaccination.shot_number == 2:
+        #         shots[1][2] += 1
+        #     elif coronaVaccination.shot_number == 3:
+        #         shots[2][3] += 1
 
         print("Corona vaccinations:")
         print(f"\tAmount of corona vaccinations: {corona_vaccinations}")
@@ -210,14 +225,14 @@ def getStats(db: Database, data_from_date: str = None):
                 corona_vaccinations += 1
 
         # get amount of patients who got 1 shot, 2 shots, 3 shots after data_from_date
-        shots = [{1: 0}, {2: 0}, {3: 0}]
-        for coronaVaccination in db.coronaVaccinations:
-            if coronaVaccination.date > data_from_date and coronaVaccination.shot_number == 1:
-                shots[0][1] += 1
-            elif coronaVaccination.date > data_from_date and coronaVaccination.shot_number == 2:
-                shots[1][2] += 1
-            elif coronaVaccination.date > data_from_date and coronaVaccination.shot_number == 3:
-                shots[2][3] += 1
+        # shots = [{1: 0}, {2: 0}, {3: 0}]
+        # for coronaVaccination in db.coronaVaccinations:
+        #     if coronaVaccination.date > data_from_date and coronaVaccination.shot_number == 1:
+        #         shots[0][1] += 1
+        #     elif coronaVaccination.date > data_from_date and coronaVaccination.shot_number == 2:
+        #         shots[1][2] += 1
+        #     elif coronaVaccination.date > data_from_date and coronaVaccination.shot_number == 3:
+        #         shots[2][3] += 1
 
         print("Corona vaccinations:")
         print(f"\tAmount of corona vaccinations: {corona_vaccinations}")

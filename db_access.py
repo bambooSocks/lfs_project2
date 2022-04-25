@@ -2,41 +2,11 @@ import json
 from model import Appointment, CoronaTest, CoronaVaccination, Patient
 
 
-# Database class Low db
-
-#   Patient List class Low db.patients
-#   Patient class Low db.patients[i]
-#       integer High db.patients[i].id
-#       string High db.patients[i].name
-#       string High db.patients[i].cpr
-
-#   Appointment List class Low db.appointments
-#   Appointment class Low db.appointments[i]
-#       integer High db.appointments[i].patient_id
-#       datetime High db.appointments[i].date
-#       string High db.appointments[i].appointment
-
-#   CoronaTest List class Low db.coronaTests
-#   CoronaTest class Low db.coronaTests[i]
-#       integer High db.coronaTests[i].patient_id
-#       datetime High db.coronaTests[i].date
-#       string High db.coronaTests[i].result
-
-#   CoronaVaccination List class Low db.coronaVaccinations
-#   CoronaVaccination class Low db.coronaVaccinations[i]
-#       integer High db.coronaVaccinations[i].patient_id
-#       datetime High db.coronaVaccinations[i].date
-#       string High db.coronaVaccinations[i].shot_number
-
-#   CoronaTest class Low db.coronaTests
-#   CoronaVaccintation class Low db.coronaVaccinations
-
-
-class Database:
-    patients: list[Patient] = []
-    coronaTests:  list[CoronaTest] = []
-    coronaVaccinations: list[CoronaVaccination] = []
-    appointments: list[Appointment] = []
+class Database:                                       # {⊥}
+    patients: list[Patient] = []                      # {shs: shs}
+    coronaTests:  list[CoronaTest] = []               # {shs: shs}
+    coronaVaccinations: list[CoronaVaccination] = []  # {shs: shs}
+    appointments: list[Appointment] = []              # {shs: shs}
 
     def load(self, filePath: str):
         f = open(filePath)
