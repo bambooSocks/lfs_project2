@@ -2,33 +2,34 @@ import json
 from model import Appointment, CoronaTest, CoronaVaccination, Patient
 
 
-# Database class High db
-    # Patient List class High db.patients
-        # Patient class High db.patients[i]
-            # integer High db.patients[i].id
-            # string High db.patients[i].name
-            # string High db.patients[i].cpr
+# Database class Low db
 
-    # Appointment List class High db.appointments
-        # Appointment class High db.appointments[i]
-            # integer High db.appointments[i].patient_id
-            # datetime High db.appointments[i].date
-            # string High db.appointments[i].appointment
+#   Patient List class Low db.patients
+#   Patient class Low db.patients[i]
+#       integer High db.patients[i].id
+#       string High db.patients[i].name
+#       string High db.patients[i].cpr
 
-    # CoronaTest List class High db.coronaTests
-        # CoronaTest class High db.coronaTests[i]
-            # integer High db.coronaTests[i].patient_id
-            # datetime High db.coronaTests[i].date
-            # string High db.coronaTests[i].result
+#   Appointment List class Low db.appointments
+#   Appointment class Low db.appointments[i]
+#       integer High db.appointments[i].patient_id
+#       datetime High db.appointments[i].date
+#       string High db.appointments[i].appointment
 
-    # CoronaVaccination List class High db.coronaVaccinations
-        # CoronaVaccination class High db.coronaVaccinations[i]
-            # integer High db.coronaVaccinations[i].patient_id
-            # datetime High db.coronaVaccinations[i].date
-            # string High db.coronaVaccinations[i].shot_number
+#   CoronaTest List class Low db.coronaTests
+#   CoronaTest class Low db.coronaTests[i]
+#       integer High db.coronaTests[i].patient_id
+#       datetime High db.coronaTests[i].date
+#       string High db.coronaTests[i].result
 
-# CoronaTest class High db.coronaTests
-# CoronaVaccintation class High db.coronaVaccinations
+#   CoronaVaccination List class Low db.coronaVaccinations
+#   CoronaVaccination class Low db.coronaVaccinations[i]
+#       integer High db.coronaVaccinations[i].patient_id
+#       datetime High db.coronaVaccinations[i].date
+#       string High db.coronaVaccinations[i].shot_number
+
+#   CoronaTest class Low db.coronaTests
+#   CoronaVaccintation class Low db.coronaVaccinations
 
 
 class Database:
