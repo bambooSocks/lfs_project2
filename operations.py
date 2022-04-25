@@ -54,13 +54,13 @@ def updateVaccinationStatus(patient_id: int, date: str, db: Database):
         CoronaVaccination(patient_id, date_after_str, shots))
 
 
-def retrievePatientData(patient_id: int, db: Database):
-
+def retrievePatientData(patient_id_low: int, db: Database):
     '''
     Questions:
     We tried to apply Myers' Approach for de-classifying information. Is it correct?
     Should we still do Information Flow Analysis on the rest of the code?
     '''
+
     def declassify(match):
         return match
 
@@ -89,61 +89,66 @@ def retrievePatientData(patient_id: int, db: Database):
         if if_acts_for(patient_id):
             ret = declassify(match)  # {client:hospitalAdmin}
 
-        return ret
+        return ret,match
 
-    ret = check_user(db.patients, patient_id)
+    patient_id = patient_id_low #patient id:int{hospitalAdmin}
+    ret,match = check_user(db.patients, patient_id)
 
-    if ret:
+    # get all patients id's
+    patient_ids = [patient.id for patient in db.patients]
 
-        # get all patients id's
-        patient_ids = [patient.id for patient in db.patients]
+    # check if patient id exists
+    if patient_id in patient_ids:
+        # patient id exists, get patient
+        patient = db.patients[patient_ids.index(patient_id)]  # patient:int{hospitalAdmin}
+        # loop through coronaTests, find all tests for patient and add to list
 
-        # check if patient id exists
-        if patient_id in patient_ids:
-            # patient id exists, get patient
-            patient = db.patients[patient_ids.index(patient_id)]
+        # Corona tests:
+        corona_tests = []
+        for coronaTest in db.coronaTests:
+            if coronaTest.patient_id == patient_id:
+                corona_tests.append(coronaTest)
+
+        # loop through coronaVaccinations, find all vaccinations for patient and add to list
+        corona_vaccinations = []
+        for coronaVaccination in db.coronaVaccinations:
+            if coronaVaccination.patient_id == patient_id:
+                corona_vaccinations.append(coronaVaccination)
+
+        if not ret:
+            print('Please try again to log in.')
+
+        else:
+            # de-classification:
+            patient_revealed = patient
+            corona_tests_revealed = corona_tests
+            corona_vaccinations_revealed = corona_vaccinations
+
             print("patient info:")
             print(
-                f"\tPatient ID: {patient.id}, \n\tName: {patient.name}, \n\tCPR: {patient.cpr}\n")
-
-            # loop through coronaTests, find all tests for patient and add to list
-            corona_tests = []
-            for coronaTest in db.coronaTests:
-                if coronaTest.patient_id == patient_id:
-                    corona_tests.append(coronaTest)
+                f"\tPatient ID: {patient_revealed.id}, \n\tName: {patient_revealed.name}, \n\tCPR: {patient_revealed.cpr}\n")
 
             print("Corona tests:")
             # check if corona_tests is empty
-            if corona_tests:
+            if corona_tests_revealed:
                 # get last index of corona_tests and print it
-                last_index = len(corona_tests) - 1
+                last_index = len(corona_tests_revealed) - 1
                 print(
-                    f"\tLast corona test date: {corona_tests[last_index].date}, \n\tcorona test result: {corona_tests[last_index].result}\n")
+                    f"\tLast corona test date: {corona_tests_revealed[last_index].date}, \n\tcorona test result: {corona_tests_revealed[last_index].result}\n")
             else:
                 print("No tests found")
 
-            # loop through coronaVaccinations, find all vaccinations for patient and add to list
-            corona_vaccinations = []
-            for coronaVaccination in db.coronaVaccinations:
-                if coronaVaccination.patient_id == patient_id:
-                    corona_vaccinations.append(coronaVaccination)
-
             print("Corona vaccinations:")
             # check if corona_vaccinations is empty
-            if corona_vaccinations:
+            if corona_vaccinations_revealed:
                 # get last index of corona_vaccinations and print it
-                last_index = len(corona_vaccinations) - 1
+                last_index = len(corona_vaccinations_revealed) - 1
                 print(
-                    f"\tLast vaccination: {corona_vaccinations[last_index].date}, \n\tvaccination number: {corona_vaccinations[last_index].shot_number}")
+                    f"\tLast vaccination: {corona_vaccinations_revealed[last_index].date}, \n\tvaccination number: {corona_vaccinations_revealed[last_index].shot_number}")
             else:
                 print("No vaccinations found")
-
-        else:
-            # if patient id does not exist, print error message
-            print(f"Patient id {patient_id} does not exist in database")
-
-    else:
-        print('Please try again to log in.')
+    if not match:
+        print(f"Patient id {patient_id_low} does not exist in the database")
 
 
 def getStats(db: Database, data_from_date: str = None):
