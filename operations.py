@@ -22,29 +22,18 @@ def bookAppointment(patient: Patient, date: str, appointment_type: str, db: Data
         updateVaccinationStatus(patient.id, date, db)
 
 
-def uploadTestResult(patient_id: int, date: str, db: Database):
-    # get date after date
-    date_after = datetime.datetime.strptime(
-        date, "%d/%m/%Y %H:%M") + datetime.timedelta(days=1)
-
-    # convert date_after to string
-    date_after_str = date_after.strftime("%d/%m/%Y %H:%M")
-
-    # get random result
-    result = ["paavist", "ikke paavist"][int(round(random.random()))]
-
-    # append new coronaTest to db.coronaTests
-    db.coronaTests.append(CoronaTest(patient_id, date_after_str, result))
+def uploadTestResult(patient_id: int, uploadDate: str, result: str, db: Database):
+    '''
+        patient_id {shs: shs}
+        uploadDate {shs: shs}
+        result     {shs: shs}
+        db         {⊥}
+    '''
+    db.coronaTests.append(CoronaTest(patient_id, uploadDate, result))
+    # {shs: shs} -> {shs: shs}
 
 
-def updateVaccinationStatus(patient_id: int, date: str, db: Database):
-    # get date after date
-    date_after = datetime.datetime.strptime(
-        date, "%d/%m/%Y %H:%M") + datetime.timedelta(days=1)
-
-    # convert date_after to string
-    date_after_str = date_after.strftime("%d/%m/%Y %H:%M")
-
+<<<<<<< Updated upstream
     # get amount of shots for patient_id
     shots = len([coronaVaccination.shot_number for coronaVaccination in db.coronaVaccinations if
                  coronaVaccination.patient_id == patient_id]) + 1
@@ -53,6 +42,16 @@ def updateVaccinationStatus(patient_id: int, date: str, db: Database):
     db.coronaVaccinations.append(
         CoronaVaccination(patient_id, date_after_str, shots))
 
+=======
+def updateVaccinationStatus(patient_id: int, uploadDate: str, db: Database):
+    '''
+        patient_id {shs: shs}
+        uploadDate {shs: shs}
+        db         {⊥}
+    '''
+    db.coronaVaccinations.append(CoronaVaccination(patient_id, uploadDate))
+    # {shs: shs} -> {shs: shs}
+>>>>>>> Stashed changes
 
 def retrievePatientData(patient_id: int, db: Database):
 
