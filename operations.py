@@ -1,9 +1,10 @@
 import datetime
 import random
 
-from numpy import isin
+# from numpy import isin
 from model import Appointment, CoronaTest, CoronaVaccination, Patient
 from db_access import Database
+
 
 # use if you need
 # # if_acts_for(bookAppointment, patient) then
@@ -51,7 +52,7 @@ def uploadTestResult(patient_id: int, uploadDate: str, result: str, db: Database
 
 def updateVaccinationStatus(patient_id: int, uploadDate: str, db: Database):
     '''
-        patient_id {shs: shs}
+        patient_id {shs: shs, patient: shs}
         uploadDate {shs: shs}
         db         {⊥}
     '''
@@ -59,105 +60,93 @@ def updateVaccinationStatus(patient_id: int, uploadDate: str, db: Database):
     # {shs: shs} -> {shs: shs}
 
 
-def retrievePatientData(patient_id_low: int, db: Database):
-    '''
-    Questions:
-    We tried to apply Myers' Approach for de-classifying information. Is it correct?
-    Should we still do Information Flow Analysis on the rest of the code?
-    '''
+def retrievePatientData(patient_id: int, db: Database):
+    """
+    patient_id       {shs: shs}
+    db               {⊥}
+    name_patient    {shs: shs, patient:shs}
+    cpr_patient     {shs: shs, patient:shs}
+    correct_idx     {shs:shs}
+    corona_test     {shs:shs}
+    corona_vaccine  {shs:shs}
+    """
+    # Check if patient exists
+    isInDB = False  # {shs: shs}
+    i = 0  # {⊥}
+    correct_idx = -100
+    while i < len(db.patients):
+        if db.patients[i].id == patient_id:  # {shs: shs} -> {shs: shs}
+            isInDB = True
+            correct_idx = i  # {⊥} -> {shs: shs}
+            # implicit patient_id, db.patients[i].id  -> isInDB {shs: shs} -> {shs: shs}
+            # implicit i -> isInDB {⊥} -> {shs: shs}
 
-    def declassify(match):
-        return match
+            break
+        i += 1  # {⊥} -> {⊥}
 
-    def if_acts_for(patient_id: int):
-        print('Are you acting (logged-in) as a hospital patient with id={}? y/n'.format(patient_id))
-        answer = input()
-        if str(answer) == 'y' or str(answer) == 'yes' or str(answer) == 'Yes':
-            print(
-                '\nYou have the right to access the test results. Here is your COVID-test information:\n')
-            permission = True
-        else:
-            print('\nYou do not have the right to access to this information. Information will not be de-classified.\n')
-            permission = False
-        return permission
+    # use if you need
+    # # if_acts_for(bookAppointment, patient) then
+    # #   isInDB_declass = declassify(isInDB, {⊥})
+    isInDB_declass = isInDB
 
-    def check_user(db_patientsList: list, patient_id: int):
-        # returns ret:bool{client:hospitalAdmin}
+    if isInDB_declass:
+        # Implicit flows from the IF statement:
+        # implicit isInDB -> name_patient, cpr_patient {⊥} -> {shs: shs, patient:shs}
+        # implicit isInDB -> corona_tests, db.coronaTests[i], db.coronaTests[idx].patient_id, patient_id, idx {⊥} -> {shs:shs}
+        # implicit isInDB -> corona_vaccinations, db.coronaVaccinations[idx], db.coronaVaccinations[i].patient_id {⊥} -> {shs:shs}
+        # implicit isInDB -> corona_test, corona_vaccine {⊥} -> {shs:shs}
+        # (after de-classification) implicit isInDB -> corona_test, corona_vaccine {⊥} -> {patient: shs}
 
-        i = 0  # int{hospitalAdmin:hospitalAdmin}
-        # bool{client:hospitalAdmin, hospitalAdmin:hospitalAdmin}
-        match = False
-        while i < len(db_patientsList):
-            if db_patientsList[i].id == patient_id:
-                match = True
-            i += 1
-        ret = False
+        name_patient = db.patients[correct_idx].name  # {shs: shs, patient:shs} -> {shs: shs, patient:shs}
+        cpr_patient = db.patients[correct_idx].cpr  # {shs: shs, patient:shs} -> {shs: shs, patient:shs}
 
-        if if_acts_for(patient_id):
-            ret = declassify(match)  # {client:hospitalAdmin}
+        corona_tests = []  # {shs: shs}
+        idx = 0  # {shs:shs}
+        while idx < len(db.coronaTests):
+            if db.coronaTests[idx].patient_id == patient_id:
+                corona_tests.append(db.coronaTests[idx])  # {shs: shs} -> {shs: shs}
+                # implicit patient_id, db.coronaTests[idx].patient_id -> corona_tests {shs: shs} -> {shs: shs}
+                # implicit idx -> corona_tests {shs: shs} -> {shs: shs}
+                break
+            idx += 1  # {shs:shs} -> {shs:shs}
 
-        return ret, match
+        corona_vaccinations = []  # {shs: shs}
+        idx = 0  # {shs: shs}
+        while i < len(db.coronaVaccinations):
+            if db.coronaVaccinations[idx].patient_id == patient_id:  # {shs: shs} -> {shs:shs}
+                corona_vaccinations.append(db.coronaVaccinations[idx])  # {shs: shs} -> {shs: shs}
+                # implicit patient_id, db.coronaVaccinations[idx].patient_id -> corona_vaccinations {shs: shs} -> {shs: shs}
+                # implicit idx -> corona_vaccinations {shs: shs} -> {shs: shs}
+                break
+            idx += 1  # {shs: shs} -> {shs: shs}
 
-    patient_id = patient_id_low  # patient id:int{hospitalAdmin}
-    ret, match = check_user(db.patients, patient_id)
+        corona_vaccine = corona_vaccinations[-1]  # {shs:shs} -> {shs:shs}
+        corona_test = corona_tests[-1]  # {shs:shs} -> {shs:shs}
 
-    # get all patients id's
-    patient_ids = [patient.id for patient in db.patients]
+        # # if_acts_for(retrievePatientData, patient) then
+        # #   name_patient_declass = declassify(name_patient, {patient: {shs,patient}})
+        # #   cpr_patient_declass = declassify(cpr_patient, {patient: shs,patient})
 
-    # check if patient id exists
-    if patient_id in patient_ids:
-        # patient id exists, get patient
-        # patient:int{hospitalAdmin}
-        patient = db.patients[patient_ids.index(patient_id)]
-        # loop through coronaTests, find all tests for patient and add to list
+        # #   corona_vaccine_class = classify(corona_vaccine, {shs: shs, patient:shs})
+        # #   corona_vaccine_declass = declassify(corona_vaccine_class, {patient:shs})
 
-        # Corona tests:
-        corona_tests = []
-        for coronaTest in db.coronaTests:
-            if coronaTest.patient_id == patient_id:
-                corona_tests.append(coronaTest)
+        # #   corona_test_class = classify(corona_test, {shs: shs, patient:shs})
+        # #   corona_test_declass = declassify(corona_test_class, {patient:shs})
 
-        # loop through coronaVaccinations, find all vaccinations for patient and add to list
-        corona_vaccinations = []
-        for coronaVaccination in db.coronaVaccinations:
-            if coronaVaccination.patient_id == patient_id:
-                corona_vaccinations.append(coronaVaccination)
+        corona_test_declass = corona_test
+        corona_vaccine_declass = corona_vaccine
 
-        if not ret:
-            print('Please try again to log in.')
-
-        else:
-            # de-classification:
-            patient_revealed = patient
-            corona_tests_revealed = corona_tests
-            corona_vaccinations_revealed = corona_vaccinations
-
-            print("patient info:")
-            print(
-                f"\tPatient ID: {patient_revealed.id}, \n\tName: {patient_revealed.name}, \n\tCPR: {patient_revealed.cpr}\n")
-
-            print("Corona tests:")
-            # check if corona_tests is empty
-            if corona_tests_revealed:
-                # get last index of corona_tests and print it
-                last_index = len(corona_tests_revealed) - 1
-                print(
-                    f"\tLast corona test date: {corona_tests_revealed[last_index].date}, \n\tcorona test result: {corona_tests_revealed[last_index].result}\n")
-            else:
-                print("No tests found")
-
-            print("Corona vaccinations:")
-            # check if corona_vaccinations is empty
-            if corona_vaccinations_revealed:
-                # get last index of corona_vaccinations and print it
-                last_index = len(corona_vaccinations_revealed) - 1
-                print(
-                    f"\tLast vaccination: {corona_vaccinations_revealed[last_index].date}, \n\tvaccination number: {corona_vaccinations_revealed[last_index].shot_number}")
-            else:
-                print("No vaccinations found")
-    if not match:
-        print(f"Patient id {patient_id_low} does not exist in the database")
-
+        print("patient info:")
+        print(
+            f"\tPrinting results for patient ID: {patient_id}\n")  # print to {shs:shs}
+        print(
+            f"\tName Patient: {name_patient}, \n\tCPR: {cpr_patient}\n")  # print to {patient:shs}
+        print(
+            f"\tLast corona test date: {corona_test_declass.date}, \n\tcorona test result: {corona_test_declass.result}\n") # print to {patient:shs}
+        print(
+            f"\tLast vaccination: {corona_vaccine_declass.date}")
+    else:
+        print("Patient was not found")  # print to {shs: shs}
 
 def getStats(db: Database, data_from_date: str = None):
     # check if data_from_date is None

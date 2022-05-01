@@ -20,4 +20,4 @@ if __name__ == "__main__":
 
     pprint(db.coronaVaccinations)
     pprint(type(db.patients))
-    pprint(retrievePatientData(100, db))
+    pprint(retrievePatientData(2, db))

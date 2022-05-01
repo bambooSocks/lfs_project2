@@ -16,7 +16,7 @@ class Database:                                       # {⊥}
         self.coronaTests = list(map(lambda ct: CoronaTest(
             ct["patient_id"], ct["date"], ct["result"]), db["corona_tests"]))
         self.coronaVaccinations = list(map(lambda cv: CoronaVaccination(
-            cv["patient_id"], cv["date"], cv["shot_number"]), db["corona_vaccination"]))
+            cv["patient_id"], cv["date"]), db["corona_vaccination"]))
         self.appointments = list(map(lambda a: Appointment(
             a["patient_id"], a["date"], a["appointment"]), db["appointments"]))
         f.close()
