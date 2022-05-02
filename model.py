@@ -4,8 +4,8 @@ from dataclasses import dataclass
 @dataclass
 class Patient:  # {shs: shs}
     id: int     # {shs: shs}
-    name: str   # {shs: shs; patient: shs}
-    cpr: str    # {shs: shs; patient: shs}
+    name: str   # {shs: shs; patient: {shs, patient}}
+    cpr: str    # {shs: shs; patient: {shs, patient}}
 
 
 @dataclass

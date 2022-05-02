@@ -1,15 +1,5 @@
-import datetime
-import random
-
-# from numpy import isin
 from model import Appointment, CoronaTest, CoronaVaccination, Patient
 from db_access import Database
-
-
-# use if you need
-# # if_acts_for(bookAppointment, patient) then
-# #   isInDB_declass = declassify(isInDB, {shs: shs})
-# isInDB_declass = isInDB
 
 
 def bookAppointment(patient: Patient, date: str, appointment_type: str, db: Database):
@@ -28,12 +18,12 @@ def bookAppointment(patient: Patient, date: str, appointment_type: str, db: Data
             # implicit patient, db.patients -> isInDB {shs: shs} -> {shs: shs}
             # implicit i -> isInDB {⊥} -> {shs: shs}
             break
-        i += 1  # {⊥} -> {⊥}
+        i += 1  # explicit i -> i {⊥} -> {⊥}
 
     if isInDB:
         print("Patient exists, making appointment")  # printed to {shs: shs}
         db.appointments.append(Appointment(patient.id, date, appointment_type))
-        # {shs: shs} -> {shs: shs}
+        # explicit patient.id, date, appointment_type -> db.appointment {shs: shs} -> {shs: shs}
     else:
         # printed to {shs: shs}
         print("Patient does not exist, no appointment booked")
@@ -47,106 +37,110 @@ def uploadTestResult(patient_id: int, uploadDate: str, result: str, db: Database
         db         {⊥}
     '''
     db.coronaTests.append(CoronaTest(patient_id, uploadDate, result))
-    # {shs: shs} -> {shs: shs}
+    # explicit patient_id, uploadDate, result -> db.coronaTests {shs: shs} -> {shs: shs}
 
 
 def updateVaccinationStatus(patient_id: int, uploadDate: str, db: Database):
     '''
-        patient_id {shs: shs, patient: shs}
+        patient_id {shs: shs}
         uploadDate {shs: shs}
         db         {⊥}
     '''
     db.coronaVaccinations.append(CoronaVaccination(patient_id, uploadDate))
-    # {shs: shs} -> {shs: shs}
+    # explicit patient_id, uploadDate -> db.coronaVaccinations {shs: shs} -> {shs: shs}
 
 
 def retrievePatientData(patient_id: int, db: Database):
     """
     patient_id       {shs: shs}
     db               {⊥}
-    name_patient    {shs: shs, patient:shs}
-    cpr_patient     {shs: shs, patient:shs}
-    correct_idx     {shs:shs}
-    corona_test     {shs:shs}
-    corona_vaccine  {shs:shs}
     """
+
     # Check if patient exists
     isInDB = False  # {shs: shs}
     i = 0  # {⊥}
-    correct_idx = -100
+    name_patient = ""  # {shs: shs, patient: {shs, patient}}
+    cpr_patient = ""  # {shs: shs, patient: {shs, patient}}
     while i < len(db.patients):
-        if db.patients[i].id == patient_id:  # {shs: shs} -> {shs: shs}
+        if db.patients[i].id == patient_id:
             isInDB = True
-            correct_idx = i  # {⊥} -> {shs: shs}
-            # implicit patient_id, db.patients[i].id  -> isInDB {shs: shs} -> {shs: shs}
+            # implicit patient_id, db.patients, db.patients[i].id -> isInDB {shs: shs} -> {shs: shs}
             # implicit i -> isInDB {⊥} -> {shs: shs}
-
+            name_patient = db.patients[i].name
+            # explicit db.patients[i].name -> name_patient {shs: shs, patient: {patient, shs}} -> {shs: shs, patient: {patient, shs}}
+            # implicit patient_id, db.patients, db.patients[i].id  -> name_patient {shs: shs} -> {shs: shs, patient: {patient, shs}}
+            # implicit i -> name_patient {⊥} -> {shs: shs, patient: {patient, shs}}
+            cpr_patient = db.patients[i].cpr
+            # explicit db.patients[i].cpr -> cpr_patient {shs: shs, patient: {patient, shs}} -> {shs: shs, patient: {patient, shs}}
+            # implicit patient_id, db.patients, db.patients[i].id -> cpr_patient {shs: shs} -> {shs: shs, patient: {patient, shs}}
+            # implicit i -> cpr_patient {⊥} -> {shs: shs, patient: {patient, shs}}
             break
         i += 1  # {⊥} -> {⊥}
 
-    # use if you need
-    # # if_acts_for(bookAppointment, patient) then
-    # #   isInDB_declass = declassify(isInDB, {⊥})
+    # if_acts_for(bookAppointment, shs) then
+    #   isInDB_declass = declassify(isInDB, {⊥})
     isInDB_declass = isInDB
 
     if isInDB_declass:
-        # Implicit flows from the IF statement:
-        # implicit isInDB -> name_patient, cpr_patient {⊥} -> {shs: shs, patient:shs}
-        # implicit isInDB -> corona_tests, db.coronaTests[i], db.coronaTests[idx].patient_id, patient_id, idx {⊥} -> {shs:shs}
-        # implicit isInDB -> corona_vaccinations, db.coronaVaccinations[idx], db.coronaVaccinations[i].patient_id {⊥} -> {shs:shs}
-        # implicit isInDB -> corona_test, corona_vaccine {⊥} -> {shs:shs}
-        # (after de-classification) implicit isInDB -> corona_test, corona_vaccine {⊥} -> {patient: shs}
-
-        # {shs: shs, patient:shs} -> {shs: shs, patient:shs}
-        name_patient = db.patients[correct_idx].name
-        # {shs: shs, patient:shs} -> {shs: shs, patient:shs}
-        cpr_patient = db.patients[correct_idx].cpr
 
         corona_tests = []  # {shs: shs}
-        idx = 0  # {shs:shs}
+        # implicit isInDB_declass -> corona_tests {⊥} -> {shs:shs}
+        idx = 0  # {⊥}
+        # implicit isInDB_declass -> idx {⊥} -> {⊥}
         while idx < len(db.coronaTests):
             if db.coronaTests[idx].patient_id == patient_id:
-                # {shs: shs} -> {shs: shs}
                 corona_tests.append(db.coronaTests[idx])
-                # implicit patient_id, db.coronaTests[idx].patient_id -> corona_tests {shs: shs} -> {shs: shs}
-                # implicit idx -> corona_tests {shs: shs} -> {shs: shs}
-
-            idx += 1  # {shs:shs} -> {shs:shs}
+                # explicit db.coronaTests[idx] -> corona_tests {shs: shs} -> {shs: shs}
+                # implicit patient_id, db.coronaTests, db.coronaTests[idx].patient_id -> corona_tests {shs: shs} -> {shs: shs}
+                # implicit idx -> corona_tests {⊥} -> {shs: shs}
+            idx += 1  # explicit idx -> idx {⊥} -> {⊥}
 
         corona_vaccinations = []  # {shs: shs}
-        idx = 0  # {shs: shs}
+        # implicit isInDB_declass -> corona_vaccinations {⊥} -> {shs:shs}
+        idx = 0  # {⊥}
+        # implicit isInDB_declass -> idx {⊥} -> {⊥}
         while idx < len(db.coronaVaccinations):
-            # {shs: shs} -> {shs:shs}
             if db.coronaVaccinations[idx].patient_id == patient_id:
-                # {shs: shs} -> {shs: shs}
                 corona_vaccinations.append(db.coronaVaccinations[idx])
-                # implicit patient_id, db.coronaVaccinations[idx].patient_id -> corona_vaccinations {shs: shs} -> {shs: shs}
-                # implicit idx -> corona_vaccinations {shs: shs} -> {shs: shs}
+                # explicit db.coronaVaccinations[idx] -> corona_vaccinations {shs: shs} -> {shs: shs}
+                # implicit patient_id, db.coronaVaccinations, db.coronaVaccinations[idx].patient_id -> corona_vaccinations {shs: shs} -> {shs: shs}
+                # implicit idx -> corona_vaccinations {⊥} -> {shs: shs}
+            idx += 1  # {⊥} -> {⊥}
 
-            idx += 1  # {shs: shs} -> {shs: shs}
+        last_corona_test = corona_tests[-1]
+        # explicit corona_tests[-1] -> last_corona_test {shs:shs} -> {shs:shs}
+        # implicit isInDB_declass -> last_corona_test {⊥} -> {shs:shs}
+        last_corona_vaccine = corona_vaccinations[-1]
+        # explicit corona_vaccinations[-1] -> last_corona_vaccine {shs:shs} -> {shs:shs}
+        # implicit isInDB_declass -> last_corona_vaccine {⊥} -> {shs:shs}
 
-        corona_vaccine = corona_vaccinations[-1]  # {shs:shs} -> {shs:shs}
-        corona_test = corona_tests[-1]  # {shs:shs} -> {shs:shs}
+        # if_acts_for(retrievePatientData, shs) then
+        #   name_patient_declass = declassify(name_patient, {patient: {shs, patient}})
+        #   cpr_patient_declass = declassify(cpr_patient, {patient: {shs, patient}})
+        name_patient_declass = name_patient
+        cpr_patient_declass = cpr_patient
 
-        # # if_acts_for(retrievePatientData, patient) then
-        # #   name_patient_declass = declassify(name_patient, {patient: {shs,patient}})
-        # #   cpr_patient_declass = declassify(cpr_patient, {patient: shs,patient})
+        # TODO: ask how to change ownership in one step
+        # if_acts_for(retrievePatientData, shs) then
+        #   corona_vaccine_declass = declassify(corona_vaccine, {patient: {shs, patient}})
+        #   corona_test_declass = declassify(corona_test, {patient: {shs, patient}})
 
-        # #   corona_vaccine_declass = declassify(corona_vaccine, {patient:shs})
-        # #   corona_test_declass = declassify(corona_test, {patient:shs})
+        last_corona_test_declass = last_corona_test
+        last_corona_vaccine_declass = last_corona_vaccine
 
-        corona_test_declass = corona_test
-        corona_vaccine_declass = corona_vaccine
+        # TODO: ask about flow after changing owner
+        # (after de-classification) implicit isInDB_declass -> corona_test_declass, corona_vaccine_declass
+        #   {⊥} -> {patient: {shs, patient}}
 
         print("patient info:")
         print(
             f"\tPrinting results for patient ID: {patient_id}\n")  # print to {shs:shs}
         print(
-            f"\tName Patient: {name_patient}, \n\tCPR: {cpr_patient}\n")  # print to {patient:shs}
+            f"\tName Patient: {name_patient_declass}, \n\tCPR: {cpr_patient_declass}\n")  # print to {patient: {patient, shs}}
         print(
-            f"\tLast corona test date: {corona_test_declass.date}, \n\tcorona test result: {corona_test_declass.result}\n")  # print to {patient:shs}
+            f"\tLast corona test date: {last_corona_test_declass.date}, \n\tcorona test result: {last_corona_test_declass.result}\n")  # print to {patient: {patient, shs}}
         print(
-            f"\tLast vaccination: {corona_vaccine_declass.date}")
+            f"\tLast vaccination: {last_corona_vaccine_declass.date}")
     else:
         print("Patient was not found")  # print to {shs: shs}
 
@@ -155,7 +149,6 @@ def getStats(db: Database, data_from_date: str):
     """
     db               {⊥}
     data_from_date   {⊥}
-    db.coronaTests   {shs: shs}
     """
 
     # get amount of corona tests after data_from_date
@@ -164,19 +157,23 @@ def getStats(db: Database, data_from_date: str):
     idx = 0  # {⊥}
     while idx < len(db.coronaTests):
         if db.coronaTests[idx].date > data_from_date:
+            corona_tests += 1
+            # explicit corona_tests -> corona_tests {shs: shs} -> {shs: shs}
             # implicit db.coronaTests[idx].date, db.coronaTests -> corona_tests {shs: shs} -> {shs: shs}
             # implicit idx, data_from_date -> corona_tests {⊥} -> {shs: shs}
-            corona_tests += 1  # {shs: shs} -> {shs: shs}
             if db.coronaTests[idx].result == "paavist":
+                positive_tests += 1
+                # explicit positive_tests -> positive_tests {shs: shs} -> {shs: shs}
                 # implicit db.coronaTests[idx].date, db.coronaTests[idx].result, db.coronaTests ->
                 #   positive_tests {shs: shs} -> {shs: shs}
                 # implicit idx, data_from_date -> positive_tests {⊥} -> {shs: shs}
-                positive_tests += 1  # {shs: shs} -> {shs: shs}
-        idx += 1  # {⊥} -> {⊥}
+        idx += 1
+        # explicit idx -> idx {⊥} -> {⊥}
 
     # if_acts_for(getStats, shs) then
     #   corona_tests_declass = declassify(corona_tests, {⊥})
     corona_tests_declass = corona_tests
+
     # if_acts_for(getStats, shs) then
     #   positive_tests_declass = declassify(positive_tests, {⊥})
     positive_tests_declass = positive_tests
