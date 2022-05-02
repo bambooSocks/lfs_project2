@@ -15,18 +15,22 @@ def bookAppointment(patient: Patient, date: str, appointment_type: str, db: Data
     while i < len(db.patients):
         if db.patients[i] == patient:
             isInDB = True
+            # explicit True -> isInDB {⊥} -> {shs: shs}
             # implicit patient, db.patients -> isInDB {shs: shs} -> {shs: shs}
             # implicit i -> isInDB {⊥} -> {shs: shs}
             break
         i += 1  # explicit i -> i {⊥} -> {⊥}
 
+    print("Booking appointment:")
+    print("\t\u001b[31m-- Printed to shs --\u001b[0m")
     if isInDB:
-        print("Patient exists, making appointment")  # printed to {shs: shs}
+        # printed to {shs: shs}
+        print("\tPatient exists, new appointment booked")
         db.appointments.append(Appointment(patient.id, date, appointment_type))
         # explicit patient.id, date, appointment_type -> db.appointment {shs: shs} -> {shs: shs}
     else:
         # printed to {shs: shs}
-        print("Patient does not exist, no appointment booked")
+        print("\tPatient does not exist, no appointment booked")
 
 
 def uploadTestResult(patient_id: int, uploadDate: str, result: str, db: Database):
@@ -56,7 +60,6 @@ def retrievePatientData(patient_id: int, db: Database):
     db               {⊥}
     """
 
-    # Check if patient exists
     isInDB = False  # {shs: shs}
     i = 0  # {⊥}
     name_patient = ""  # {shs: shs, patient: {shs, patient}}
@@ -64,6 +67,7 @@ def retrievePatientData(patient_id: int, db: Database):
     while i < len(db.patients):
         if db.patients[i].id == patient_id:
             isInDB = True
+            # explicit True -> isInDB {⊥} -> {shs: shs}
             # implicit patient_id, db.patients, db.patients[i].id -> isInDB {shs: shs} -> {shs: shs}
             # implicit i -> isInDB {⊥} -> {shs: shs}
             name_patient = db.patients[i].name
@@ -114,34 +118,35 @@ def retrievePatientData(patient_id: int, db: Database):
         # explicit corona_vaccinations[-1] -> last_corona_vaccine {shs:shs} -> {shs:shs}
         # implicit isInDB_declass -> last_corona_vaccine {⊥} -> {shs:shs}
 
+        name_patient_declass = ""  # {patient: {shs, patient}}
+        cpr_patient_declass = ""  # {patient: {shs, patient}}
         # if_acts_for(retrievePatientData, shs) then
         #   name_patient_declass = declassify(name_patient, {patient: {shs, patient}})
         #   cpr_patient_declass = declassify(cpr_patient, {patient: {shs, patient}})
         name_patient_declass = name_patient
         cpr_patient_declass = cpr_patient
 
-        # TODO: ask how to change ownership in one step
+        last_corona_test_declass = None  # {patient: {shs, patient}}
+        last_corona_vaccine_declass = None  # {patient: {shs, patient}}
         # if_acts_for(retrievePatientData, shs) then
-        #   corona_vaccine_declass = declassify(corona_vaccine, {patient: {shs, patient}})
-        #   corona_test_declass = declassify(corona_test, {patient: {shs, patient}})
-
+        #   last_corona_test_declass = declassify(last_corona_test, {⊥})
+        #   last_corona_vaccine_declass = declassify(last_corona_vaccine, {⊥})
         last_corona_test_declass = last_corona_test
         last_corona_vaccine_declass = last_corona_vaccine
 
-        # TODO: ask about flow after changing owner
-        # (after de-classification) implicit isInDB_declass -> corona_test_declass, corona_vaccine_declass
-        #   {⊥} -> {patient: {shs, patient}}
-
-        print("patient info:")
+        print("Patient info:")
+        print("\t\u001b[31m-- Printed to shs --\u001b[0m")
         print(
             f"\tPrinting results for patient ID: {patient_id}\n")  # print to {shs:shs}
+        print("\t\u001b[32m-- Printed to patient --\u001b[0m")
         print(
             f"\tName Patient: {name_patient_declass}, \n\tCPR: {cpr_patient_declass}\n")  # print to {patient: {patient, shs}}
         print(
             f"\tLast corona test date: {last_corona_test_declass.date}, \n\tcorona test result: {last_corona_test_declass.result}\n")  # print to {patient: {patient, shs}}
         print(
-            f"\tLast vaccination: {last_corona_vaccine_declass.date}")
+            f"\tLast vaccination: {last_corona_vaccine_declass.date}")  # print to {patient: {patient, shs}}
     else:
+        print("\u001b[31m-- Printed to shs --\u001b[0m")
         print("Patient was not found")  # print to {shs: shs}
 
 
@@ -180,5 +185,8 @@ def getStats(db: Database, data_from_date: str):
 
     # publishing to a channel with security lattice {⊥}
     print("Corona tests:")
+    print("\t\u001b[34m-- Printed to public --\u001b[0m")
     print(f"\tAmount of corona tests: {corona_tests_declass}")
+    # printed to {⊥}
     print(f"\tAmount of positive corona tests: {positive_tests_declass}\n")
+    # printed to {⊥}
