@@ -97,27 +97,32 @@ def retrievePatientData(patient_id: int, db: Database):
         # implicit isInDB -> corona_test, corona_vaccine {⊥} -> {shs:shs}
         # (after de-classification) implicit isInDB -> corona_test, corona_vaccine {⊥} -> {patient: shs}
 
-        name_patient = db.patients[correct_idx].name  # {shs: shs, patient:shs} -> {shs: shs, patient:shs}
-        cpr_patient = db.patients[correct_idx].cpr  # {shs: shs, patient:shs} -> {shs: shs, patient:shs}
+        # {shs: shs, patient:shs} -> {shs: shs, patient:shs}
+        name_patient = db.patients[correct_idx].name
+        # {shs: shs, patient:shs} -> {shs: shs, patient:shs}
+        cpr_patient = db.patients[correct_idx].cpr
 
         corona_tests = []  # {shs: shs}
         idx = 0  # {shs:shs}
         while idx < len(db.coronaTests):
             if db.coronaTests[idx].patient_id == patient_id:
-                corona_tests.append(db.coronaTests[idx])  # {shs: shs} -> {shs: shs}
+                # {shs: shs} -> {shs: shs}
+                corona_tests.append(db.coronaTests[idx])
                 # implicit patient_id, db.coronaTests[idx].patient_id -> corona_tests {shs: shs} -> {shs: shs}
                 # implicit idx -> corona_tests {shs: shs} -> {shs: shs}
-                break
+
             idx += 1  # {shs:shs} -> {shs:shs}
 
         corona_vaccinations = []  # {shs: shs}
         idx = 0  # {shs: shs}
-        while i < len(db.coronaVaccinations):
-            if db.coronaVaccinations[idx].patient_id == patient_id:  # {shs: shs} -> {shs:shs}
-                corona_vaccinations.append(db.coronaVaccinations[idx])  # {shs: shs} -> {shs: shs}
+        while idx < len(db.coronaVaccinations):
+            # {shs: shs} -> {shs:shs}
+            if db.coronaVaccinations[idx].patient_id == patient_id:
+                # {shs: shs} -> {shs: shs}
+                corona_vaccinations.append(db.coronaVaccinations[idx])
                 # implicit patient_id, db.coronaVaccinations[idx].patient_id -> corona_vaccinations {shs: shs} -> {shs: shs}
                 # implicit idx -> corona_vaccinations {shs: shs} -> {shs: shs}
-                break
+
             idx += 1  # {shs: shs} -> {shs: shs}
 
         corona_vaccine = corona_vaccinations[-1]  # {shs:shs} -> {shs:shs}
@@ -127,11 +132,8 @@ def retrievePatientData(patient_id: int, db: Database):
         # #   name_patient_declass = declassify(name_patient, {patient: {shs,patient}})
         # #   cpr_patient_declass = declassify(cpr_patient, {patient: shs,patient})
 
-        # #   corona_vaccine_class = classify(corona_vaccine, {shs: shs, patient:shs})
-        # #   corona_vaccine_declass = declassify(corona_vaccine_class, {patient:shs})
-
-        # #   corona_test_class = classify(corona_test, {shs: shs, patient:shs})
-        # #   corona_test_declass = declassify(corona_test_class, {patient:shs})
+        # #   corona_vaccine_declass = declassify(corona_vaccine, {patient:shs})
+        # #   corona_test_declass = declassify(corona_test, {patient:shs})
 
         corona_test_declass = corona_test
         corona_vaccine_declass = corona_vaccine
@@ -142,82 +144,44 @@ def retrievePatientData(patient_id: int, db: Database):
         print(
             f"\tName Patient: {name_patient}, \n\tCPR: {cpr_patient}\n")  # print to {patient:shs}
         print(
-            f"\tLast corona test date: {corona_test_declass.date}, \n\tcorona test result: {corona_test_declass.result}\n") # print to {patient:shs}
+            f"\tLast corona test date: {corona_test_declass.date}, \n\tcorona test result: {corona_test_declass.result}\n")  # print to {patient:shs}
         print(
             f"\tLast vaccination: {corona_vaccine_declass.date}")
     else:
         print("Patient was not found")  # print to {shs: shs}
 
-def getStats(db: Database, data_from_date: str = None):
-    # check if data_from_date is None
-    if data_from_date is None:
-        # get amount of corona tests
-        corona_tests = len(db.coronaTests)
 
-        # get amount of corona tests with positive result
-        positive_tests = 0
-        for coronaTest in db.coronaTests:
-            if coronaTest.result == "paavist":
-                positive_tests += 1
+def getStats(db: Database, data_from_date: str):
+    """
+    db               {⊥}
+    data_from_date   {⊥}
+    db.coronaTests   {shs: shs}
+    """
 
-        print("Corona tests:")
-        print(f"\tAmount of corona tests: {corona_tests}")
-        print(f"\tAmount of positive corona tests: {positive_tests}\n")
+    # get amount of corona tests after data_from_date
+    corona_tests = 0   # {shs: shs}
+    positive_tests = 0  # {shs: shs}
+    idx = 0  # {⊥}
+    while idx < len(db.coronaTests):
+        if db.coronaTests[idx].date > data_from_date:
+            # implicit db.coronaTests[idx].date, db.coronaTests -> corona_tests {shs: shs} -> {shs: shs}
+            # implicit idx, data_from_date -> corona_tests {⊥} -> {shs: shs}
+            corona_tests += 1  # {shs: shs} -> {shs: shs}
+            if db.coronaTests[idx].result == "paavist":
+                # implicit db.coronaTests[idx].date, db.coronaTests[idx].result, db.coronaTests ->
+                #   positive_tests {shs: shs} -> {shs: shs}
+                # implicit idx, data_from_date -> positive_tests {⊥} -> {shs: shs}
+                positive_tests += 1  # {shs: shs} -> {shs: shs}
+        idx += 1  # {⊥} -> {⊥}
 
-        # get amount of corona vaccinations
-        corona_vaccinations = len(db.coronaVaccinations)
+    # if_acts_for(getStats, shs) then
+    #   corona_tests_declass = declassify(corona_tests, {⊥})
+    corona_tests_declass = corona_tests
+    # if_acts_for(getStats, shs) then
+    #   positive_tests_declass = declassify(positive_tests, {⊥})
+    positive_tests_declass = positive_tests
 
-        # get amount of patients who got 1 shot, 2 shots, 3 shots
-        # shots = [{1: 0}, {2: 0}, {3: 0}]
-        # for coronaVaccination in db.coronaVaccinations:
-        #     if coronaVaccination.shot_number == 1:
-        #         shots[0][1] += 1
-        #     elif coronaVaccination.shot_number == 2:
-        #         shots[1][2] += 1
-        #     elif coronaVaccination.shot_number == 3:
-        #         shots[2][3] += 1
-
-        print("Corona vaccinations:")
-        print(f"\tAmount of corona vaccinations: {corona_vaccinations}")
-        print(f"\tAmount of patients who got 1 shot: {shots[0][1]}")
-        print(f"\tAmount of patients who got 2 shots: {shots[1][2]}")
-        print(f"\tAmount of patients who got 3 shots: {shots[2][3]}\n")
-
-    else:
-        # get amount of corona tests after data_from_date
-        corona_tests = 0
-        for coronaTest in db.coronaTests:
-            if coronaTest.date > data_from_date:
-                corona_tests += 1
-
-        # get amount of corona tests with positive result after data_from_date
-        positive_tests = 0
-        for coronaTest in db.coronaTests:
-            if coronaTest.date > data_from_date and coronaTest.result == "paavist":
-                positive_tests += 1
-
-        print("Corona tests:")
-        print(f"\tAmount of corona tests: {corona_tests}")
-        print(f"\tAmount of positive corona tests: {positive_tests}\n")
-
-        # get amount of corona vaccinations after data_from_date
-        corona_vaccinations = 0
-        for coronaVaccination in db.coronaVaccinations:
-            if coronaVaccination.date > data_from_date:
-                corona_vaccinations += 1
-
-        # get amount of patients who got 1 shot, 2 shots, 3 shots after data_from_date
-        # shots = [{1: 0}, {2: 0}, {3: 0}]
-        # for coronaVaccination in db.coronaVaccinations:
-        #     if coronaVaccination.date > data_from_date and coronaVaccination.shot_number == 1:
-        #         shots[0][1] += 1
-        #     elif coronaVaccination.date > data_from_date and coronaVaccination.shot_number == 2:
-        #         shots[1][2] += 1
-        #     elif coronaVaccination.date > data_from_date and coronaVaccination.shot_number == 3:
-        #         shots[2][3] += 1
-
-        print("Corona vaccinations:")
-        print(f"\tAmount of corona vaccinations: {corona_vaccinations}")
-        print(f"\tAmount of patients who got 1 shot: {shots[0][1]}")
-        print(f"\tAmount of patients who got 2 shots: {shots[1][2]}")
-        print(f"\tAmount of patients who got 3 shots: {shots[2][3]}\n")
+    # publishing to a channel with security lattice {⊥}
+    print("Corona tests:")
+    print(f"\tAmount of corona tests: {corona_tests_declass}")
+    print(f"\tAmount of positive corona tests: {positive_tests_declass}\n")
