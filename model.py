@@ -2,27 +2,27 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Patient:  # {shs: shs}
+class Patient:  # {⊥}
     id: int     # {shs: shs}
     name: str   # {shs: shs; patient: {shs, patient}}
     cpr: str    # {shs: shs; patient: {shs, patient}}
 
 
 @dataclass
-class CoronaTest:    # {shs: shs}
+class CoronaTest:    # {⊥}
     patient_id: int  # {shs: shs}
     date: str        # {shs: shs}
     result: str      # {shs: shs}
 
 
 @dataclass
-class CoronaVaccination:  # {shs: shs}
+class CoronaVaccination:  # {⊥}
     patient_id: int       # {shs: shs}
     date: str             # {shs: shs}
 
 
 @dataclass
-class Appointment:    # {shs: shs}
+class Appointment:    # {⊥}
     patient_id: int   # {shs: shs}
     date: str         # {shs: shs}
     appointment: str  # {shs: shs}
