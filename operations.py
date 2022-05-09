@@ -11,15 +11,15 @@ def bookAppointment(patient: Patient, date: str, appointment_type: str, db: Data
     """
     # Check if patient exists
     isInDB = False  # {shs: shs}
-    i = 0  # {⊥}
+    i = 0  # {shs: shs}
     while i < len(db.patients):
         if db.patients[i] == patient:
             isInDB = True
             # explicit True -> isInDB {⊥} -> {shs: shs}
-            # implicit db.patients -> isInDB {shs: shs} -> {shs: shs}
-            # implicit patient, i -> isInDB {⊥} -> {shs: shs}
+            # implicit i, db.patients -> isInDB {shs: shs} -> {shs: shs}
+            # implicit patient -> isInDB {⊥} -> {shs: shs}
             break
-        i += 1  # explicit i -> i {⊥} -> {⊥}
+        i += 1  # explicit i -> i {shs: shs} -> {shs: shs}
 
     print("Booking appointment:")
     print("\t\u001b[31m-- Printed to shs --\u001b[0m")
@@ -62,7 +62,7 @@ def retrievePatientData(patient_id: int, db: Database):
     """
 
     isInDB = False  # {shs: shs}
-    i = 0  # {⊥}
+    i = 0  # {shs: shs}
     name_patient = ""  # {shs: shs, patient: {shs, patient}}
     cpr_patient = ""  # {shs: shs, patient: {shs, patient}}
     while i < len(db.patients):
@@ -70,21 +70,21 @@ def retrievePatientData(patient_id: int, db: Database):
             isInDB = True
             # explicit True -> isInDB {⊥} -> {shs: shs}
             # implicit patient_id, db.patients, db.patients[i].id -> isInDB {shs: shs} -> {shs: shs}
-            # implicit i -> isInDB {⊥} -> {shs: shs}
+            # implicit i -> isInDB {shs: shs} -> {shs: shs}
             name_patient = db.patients[i].name
             # explicit db.patients[i].name -> name_patient
             # {shs: shs, patient: {patient, shs}} -> {shs: shs, patient: {patient, shs}}
             # implicit patient_id, db.patients, db.patients[i].id  -> name_patient
             # {shs: shs} -> {shs: shs, patient: {patient, shs}}
-            # implicit i -> name_patient {⊥} -> {shs: shs, patient: {patient, shs}}
+            # implicit i -> name_patient {shs: shs} -> {shs: shs, patient: {patient, shs}}
             cpr_patient = db.patients[i].cpr
             # explicit db.patients[i].cpr -> cpr_patient
             # {shs: shs, patient: {patient, shs}} -> {shs: shs, patient: {patient, shs}}
             # implicit patient_id, db.patients, db.patients[i].id -> cpr_patient
             # {shs: shs} -> {shs: shs, patient: {patient, shs}}
-            # implicit i -> cpr_patient {⊥} -> {shs: shs, patient: {patient, shs}}
+            # implicit i -> cpr_patient {shs: shs} -> {shs: shs, patient: {patient, shs}}
             break
-        i += 1  # {⊥} -> {⊥}
+        i += 1  # {shs: shs} -> {shs: shs}
 
     isInDB_declass = False  # {⊥}
     # if_acts_for(bookAppointment, shs) then
@@ -95,29 +95,29 @@ def retrievePatientData(patient_id: int, db: Database):
 
         corona_tests = []  # {shs: shs}
         # implicit isInDB_declass -> corona_tests {⊥} -> {shs:shs}
-        idx = 0  # {⊥}
-        # implicit isInDB_declass -> idx {⊥} -> {⊥}
+        idx = 0  # {shs: shs}
+        # implicit isInDB_declass -> idx {⊥} -> {shs: shs}
         while idx < len(db.coronaTests):
             if db.coronaTests[idx].patient_id == patient_id:
                 corona_tests.append(db.coronaTests[idx])
                 # explicit db.coronaTests[idx] -> corona_tests {shs: shs} -> {shs: shs}
                 # implicit patient_id, db.coronaTests, db.coronaTests[idx].patient_id
                 # -> corona_tests {shs: shs} -> {shs: shs}
-                # implicit idx -> corona_tests {⊥} -> {shs: shs}
-            idx += 1  # explicit idx -> idx {⊥} -> {⊥}
+                # implicit idx -> corona_tests {shs: shs} -> {shs: shs}
+            idx += 1  # explicit idx -> idx {shs: shs} -> {shs: shs}
 
         corona_vaccinations = []  # {shs: shs}
         # implicit isInDB_declass -> corona_vaccinations {⊥} -> {shs:shs}
-        idx = 0  # {⊥}
-        # implicit isInDB_declass -> idx {⊥} -> {⊥}
+        idx = 0  # {shs: shs}
+        # implicit isInDB_declass -> idx {⊥} -> {shs: shs}
         while idx < len(db.coronaVaccinations):
             if db.coronaVaccinations[idx].patient_id == patient_id:
                 corona_vaccinations.append(db.coronaVaccinations[idx])
                 # explicit db.coronaVaccinations[idx] -> corona_vaccinations {shs: shs} -> {shs: shs}
                 # implicit patient_id, db.coronaVaccinations, db.coronaVaccinations[idx].patient_id
                 # -> corona_vaccinations {shs: shs} -> {shs: shs}
-                # implicit idx -> corona_vaccinations {⊥} -> {shs: shs}
-            idx += 1  # {⊥} -> {⊥}
+                # implicit idx -> corona_vaccinations {shs: shs} -> {shs: shs}
+            idx += 1  # explicit idx -> idx {shs: shs} -> {shs: shs}
 
         last_corona_test = corona_tests[-1]
         # explicit corona_tests[-1] -> last_corona_test {shs:shs} -> {shs:shs}
@@ -171,21 +171,21 @@ def getStats(db: Database, data_from_date: str):
     # get amount of corona tests after data_from_date
     corona_tests = 0   # {shs: shs}
     positive_tests = 0  # {shs: shs}
-    idx = 0  # {⊥}
+    idx = 0  # {shs: shs}
     while idx < len(db.coronaTests):
         if db.coronaTests[idx].date > data_from_date:
             corona_tests += 1
             # explicit corona_tests -> corona_tests {shs: shs} -> {shs: shs}
-            # implicit db.coronaTests[idx].date, db.coronaTests -> corona_tests {shs: shs} -> {shs: shs}
-            # implicit idx, data_from_date -> corona_tests {⊥} -> {shs: shs}
+            # implicit idx, db.coronaTests[idx].date, db.coronaTests -> corona_tests {shs: shs} -> {shs: shs}
+            # implicit data_from_date -> corona_tests {⊥} -> {shs: shs}
             if db.coronaTests[idx].result == "paavist":
                 positive_tests += 1
                 # explicit positive_tests -> positive_tests {shs: shs} -> {shs: shs}
-                # implicit db.coronaTests[idx].date, db.coronaTests[idx].result, db.coronaTests ->
+                # implicit idx, db.coronaTests[idx].date, db.coronaTests[idx].result, db.coronaTests ->
                 #   positive_tests {shs: shs} -> {shs: shs}
-                # implicit idx, data_from_date -> positive_tests {⊥} -> {shs: shs}
+                # implicit data_from_date -> positive_tests {⊥} -> {shs: shs}
         idx += 1
-        # explicit idx -> idx {⊥} -> {⊥}
+        # explicit idx -> idx {shs: shs} -> {shs: shs}
 
     corona_tests_declass = 0  # {⊥}
     # if_acts_for(getStats, shs) then
