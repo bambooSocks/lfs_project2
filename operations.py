@@ -24,10 +24,11 @@ def bookAppointment(patient: Patient, date: str, appointment_type: str, db: Data
     print("Booking appointment:")
     print("\t\u001b[31m-- Printed to shs --\u001b[0m")
     if isInDB:
-        # printed to {shs: shs}
+        # printed to {shs: shs}a
         print("\tPatient exists, new appointment booked")
         db.appointments.append(Appointment(patient.id, date, appointment_type))
-        # implicit patient.id, date, appointment_type, isInDB -> db.appointment {shs: shs} -> {shs: shs}
+        # explicit patient.id, date, appointment_type -> db.appointment {shs: shs} -> {shs: shs}
+        # implicit isInDB -> db.appointment {shs: shs} -> {shs: shs}
     else:
         # printed to {shs: shs}
         print("\tPatient does not exist, no appointment booked")
@@ -41,7 +42,7 @@ def uploadTestResult(patient_id: int, uploadDate: str, result: str, db: Database
         db         {⊥}
     '''
     db.coronaTests.append(CoronaTest(patient_id, uploadDate, result))
-    # implicit patient_id, uploadDate, result -> db.coronaTests {shs: shs} -> {shs: shs}
+    # explicit patient_id, uploadDate, result -> db.coronaTests {shs: shs} -> {shs: shs}
 
 
 def updateVaccinationStatus(patient_id: int, uploadDate: str, db: Database):
@@ -51,7 +52,7 @@ def updateVaccinationStatus(patient_id: int, uploadDate: str, db: Database):
         db         {⊥}
     '''
     db.coronaVaccinations.append(CoronaVaccination(patient_id, uploadDate))
-    # implicit patient_id, uploadDate -> db.coronaVaccinations {shs: shs} -> {shs: shs}
+    # explicit patient_id, uploadDate -> db.coronaVaccinations {shs: shs} -> {shs: shs}
 
 
 def retrievePatientData(patient_id: int, db: Database):
@@ -71,12 +72,16 @@ def retrievePatientData(patient_id: int, db: Database):
             # implicit patient_id, db.patients, db.patients[i].id -> isInDB {shs: shs} -> {shs: shs}
             # implicit i -> isInDB {⊥} -> {shs: shs}
             name_patient = db.patients[i].name
-            # explicit db.patients[i].name -> name_patient {shs: shs, patient: {patient, shs}} -> {shs: shs, patient: {patient, shs}}
-            # implicit patient_id, db.patients, db.patients[i].id  -> name_patient {shs: shs} -> {shs: shs, patient: {patient, shs}}
+            # explicit db.patients[i].name -> name_patient
+            # {shs: shs, patient: {patient, shs}} -> {shs: shs, patient: {patient, shs}}
+            # implicit patient_id, db.patients, db.patients[i].id  -> name_patient
+            # {shs: shs} -> {shs: shs, patient: {patient, shs}}
             # implicit i -> name_patient {⊥} -> {shs: shs, patient: {patient, shs}}
             cpr_patient = db.patients[i].cpr
-            # explicit db.patients[i].cpr -> cpr_patient {shs: shs, patient: {patient, shs}} -> {shs: shs, patient: {patient, shs}}
-            # implicit patient_id, db.patients, db.patients[i].id -> cpr_patient {shs: shs} -> {shs: shs, patient: {patient, shs}}
+            # explicit db.patients[i].cpr -> cpr_patient
+            # {shs: shs, patient: {patient, shs}} -> {shs: shs, patient: {patient, shs}}
+            # implicit patient_id, db.patients, db.patients[i].id -> cpr_patient
+            # {shs: shs} -> {shs: shs, patient: {patient, shs}}
             # implicit i -> cpr_patient {⊥} -> {shs: shs, patient: {patient, shs}}
             break
         i += 1  # {⊥} -> {⊥}
@@ -95,7 +100,9 @@ def retrievePatientData(patient_id: int, db: Database):
         while idx < len(db.coronaTests):
             if db.coronaTests[idx].patient_id == patient_id:
                 corona_tests.append(db.coronaTests[idx])
-                # implicit db.coronaTests[idx], patient_id, db.coronaTests, db.coronaTests[idx].patient_id -> corona_tests {shs: shs} -> {shs: shs}
+                # explicit db.coronaTests[idx] -> corona_tests {shs: shs} -> {shs: shs}
+                # implicit patient_id, db.coronaTests, db.coronaTests[idx].patient_id
+                # -> corona_tests {shs: shs} -> {shs: shs}
                 # implicit idx -> corona_tests {⊥} -> {shs: shs}
             idx += 1  # explicit idx -> idx {⊥} -> {⊥}
 
@@ -106,7 +113,9 @@ def retrievePatientData(patient_id: int, db: Database):
         while idx < len(db.coronaVaccinations):
             if db.coronaVaccinations[idx].patient_id == patient_id:
                 corona_vaccinations.append(db.coronaVaccinations[idx])
-                # implicit db.coronaVaccinations[idx], patient_id, db.coronaVaccinations, db.coronaVaccinations[idx].patient_id -> corona_vaccinations {shs: shs} -> {shs: shs}
+                # explicit db.coronaVaccinations[idx] -> corona_vaccinations {shs: shs} -> {shs: shs}
+                # implicit patient_id, db.coronaVaccinations, db.coronaVaccinations[idx].patient_id
+                # -> corona_vaccinations {shs: shs} -> {shs: shs}
                 # implicit idx -> corona_vaccinations {⊥} -> {shs: shs}
             idx += 1  # {⊥} -> {⊥}
 
@@ -135,15 +144,19 @@ def retrievePatientData(patient_id: int, db: Database):
 
         print("Patient info:")
         print("\t\u001b[31m-- Printed to shs --\u001b[0m")
-        print(
-            f"\tPrinting results for patient ID: {patient_id}\n")  # print to {shs:shs}
+        print(f"\tPrinting results for patient ID: {patient_id}\n")
+        # print to {shs:shs}
         print("\t\u001b[32m-- Printed to patient --\u001b[0m")
         print(
-            f"\tName Patient: {name_patient_declass}, \n\tCPR: {cpr_patient_declass}\n")  # print to {patient: {patient, shs}}
+            f"\tName Patient: {name_patient_declass}, \n\tCPR: {cpr_patient_declass}\n")
+        # print to {patient: {patient, shs}}
         print(
-            f"\tLast corona test date: {last_corona_test_declass.date}, \n\tcorona test result: {last_corona_test_declass.result}\n")  # print to {patient: {patient, shs}}
+            f"\tLast corona test date: {last_corona_test_declass.date},"
+            f"\n\tcorona test result: {last_corona_test_declass.result}\n")
+        # print to {patient: {patient, shs}}
         print(
-            f"\tLast vaccination: {last_corona_vaccine_declass.date}")  # print to {patient: {patient, shs}}
+            f"\tLast vaccination: {last_corona_vaccine_declass.date}")
+        # print to {patient: {patient, shs}}
     else:
         print("\u001b[31m-- Printed to shs --\u001b[0m")
         print("Patient was not found")  # print to {shs: shs}
