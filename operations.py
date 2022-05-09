@@ -102,7 +102,7 @@ def retrievePatientData(patient_id: int, db: Database):
                 corona_tests.append(db.coronaTests[idx])
                 # explicit db.coronaTests[idx] -> corona_tests {shs: shs} -> {shs: shs}
                 # implicit patient_id, db.coronaTests, db.coronaTests[idx].patient_id
-                # -> corona_tests {shs: shs} -> {shs: shs}
+                    # -> corona_tests {shs: shs} -> {shs: shs}
                 # implicit idx -> corona_tests {shs: shs} -> {shs: shs}
             idx += 1  # explicit idx -> idx {shs: shs} -> {shs: shs}
 
@@ -115,7 +115,7 @@ def retrievePatientData(patient_id: int, db: Database):
                 corona_vaccinations.append(db.coronaVaccinations[idx])
                 # explicit db.coronaVaccinations[idx] -> corona_vaccinations {shs: shs} -> {shs: shs}
                 # implicit patient_id, db.coronaVaccinations, db.coronaVaccinations[idx].patient_id
-                # -> corona_vaccinations {shs: shs} -> {shs: shs}
+                    # -> corona_vaccinations {shs: shs} -> {shs: shs}
                 # implicit idx -> corona_vaccinations {shs: shs} -> {shs: shs}
             idx += 1  # explicit idx -> idx {shs: shs} -> {shs: shs}
 
